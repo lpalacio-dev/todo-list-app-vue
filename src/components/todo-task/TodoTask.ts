@@ -9,21 +9,21 @@ export default defineComponent({
         const { deleteTodo, updateTodo } = useTodoStore()
         const task = props.todoTask
         
-        const input = ref(null)
+        const input = ref<HTMLInputElement | null>(null);
 
         watchEffect(() => {
             if (input.value) {
-              input.value.focus()
+                input.value.focus()
             } else {
               // not mounted yet, or the element was unmounted (e.g. by v-if)
             }
-          })
+        })
         
         const deleteTodoFun =  (id:string) => {
             deleteTodo(id)
         }
 
-        const doneTodoFun = async(todo) => {
+        const doneTodoFun = async(todo:any) => {
             await updateTodo(todo, true)
             // console.log(todo)
         }
@@ -32,12 +32,12 @@ export default defineComponent({
         const editedText = ref(task.texto);
 
         // Función para cambiar el estado de edición
-        const startEditing = (task) => {
+        const startEditing = (task:any) => {
         task.editing = !task.editing;
         }
 
         // Función para finalizar la edición y actualizar el texto original
-        const finishEditing = async (task) => {
+        const finishEditing = async (task:any) => {
             task.editing = false;
             if( editedText.value.length > 0 ) {
                 task.texto = editedText.value;

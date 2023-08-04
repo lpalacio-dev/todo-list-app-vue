@@ -13,6 +13,12 @@ interface TodoTask {
     status: boolean,
 }
 
+interface MyData {
+    texto: string;
+    status: boolean;
+    // Agrega otras propiedades si es necesario
+}
+
 export const useTodoStore = defineStore('todo', {
     state: ():State => ({
         arrTodos: [],
@@ -32,7 +38,7 @@ export const useTodoStore = defineStore('todo', {
 
             const arrayData = Object.entries(data).map(([key, value]) => {
                 // console.log(value)
-                const { texto, status } = value
+                const { texto, status } = value as MyData;
                 return {
                     id: key,
                     texto,
