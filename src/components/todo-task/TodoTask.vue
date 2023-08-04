@@ -8,7 +8,7 @@
             <input
                 type="checkbox"
                 id="myCheckbox"
-                @change="funcion(task)"
+                @change="doneTodoFun(task)"
                 :checked="task.status"
                 class="w-full h-full" 
             >
@@ -16,10 +16,24 @@
         <div
             class="w-[80%] break-normal pl-2"
         >
-            {{ task.texto }}
+            <template v-if="task.editing">
+                <input
+                type="text"
+                v-model="editedText"
+                @keyup.enter="finishEditing(task)"
+                class="w-full bg-transparent border-none focus:ring focus:outline-none focus:border-blue-500 px-4 py-2 rounded-md"
+                ref="input"
+                >
+            </template>
+            <template v-else>
+                <span>{{ task.texto }}</span>
+            </template>
+
         </div>
         <div class="w-[15%] flex justify-center">
-            <div class="w-[50%] flex justify-center items-center cursor-pointer">
+            <div 
+            @click="startEditing(task)"
+            class="w-[50%] flex justify-center items-center cursor-pointer">
                 <i class="fa-solid fa-pencil"></i>
             </div>
             <div 

@@ -9,7 +9,7 @@ export const useTodoStore = () => {
         isTodoList: computed<boolean>( () => store.isTodoList),
         getTodos: () => store.getTodos(),
         createTodo: (texto: string) => store.createTodo(texto),
-        doneTodo: (todo) => store.doneTodo(todo),
+        updateTodo: (todo, changeStatus = false) => store.updateTodo(todo, changeStatus),
         deleteTodo: (id: string) => store.deleteTodo(id)
     }
 }

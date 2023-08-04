@@ -57,9 +57,11 @@ export const useTodoStore = defineStore('todo', {
             // console.log('EN EL CREATETODO', this.arrTodos)
         },
 
-        async doneTodo(todo: TodoTask) {
+        async updateTodo(todo: TodoTask, changeStatus: boolean = false) {
             // console.log('ANTES DE DONE', todo.status)
-            todo.status = !todo.status
+            if(changeStatus) {
+                todo.status = !todo.status
+            }
             // console.log('EN DONE TODO', todo.status)
             const dataToSave = { texto: todo.texto, status: todo.status}
             await firebaseApi.put(`/todos/${todo.id}.json`, dataToSave)
