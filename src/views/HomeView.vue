@@ -2,6 +2,7 @@
 // import TheWelcome from '../components/TheWelcome.vue'
   import Inputbar from '@/components/inputbar/Inputbar.vue'
   import TodoList from '@/components/todo-list/TodoList.vue'
+
 </script>
 
 <template>
