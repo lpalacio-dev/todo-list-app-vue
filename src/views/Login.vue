@@ -76,7 +76,7 @@ const onSubmit = async() => {
     userForm.value.password = ''
 
     try {     
-        const { user} = await signInWithEmailAndPassword(auth, email, password)
+        const { user } :any = await signInWithEmailAndPassword(auth, email, password)
         console.log("INICIO DE SESION:", user);
 
         localStorage.setItem( 'userUid', user.uid )
