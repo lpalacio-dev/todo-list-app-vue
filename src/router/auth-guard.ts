@@ -1,7 +1,6 @@
 import { auth} from '@/utils/firebaseConfig'
-import { RouteLocationNormalized, NavigationGuardNext } from 'vue-router';
 
-const isAuthenticatedGuard = async ( to : RouteLocationNormalized , from : RouteLocationNormalized, next : NavigationGuardNext ) => {
+const isAuthenticatedGuard = ( to:any , from:any, next:any ) => {
 
     // const user = auth.currentUser;
     const user = localStorage.getItem('userUid')
