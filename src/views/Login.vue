@@ -80,7 +80,10 @@ const onSubmit = async() => {
         console.log("INICIO DE SESION:", user);
 
         localStorage.setItem( 'userUid', user.uid )
-        localStorage.setItem( 'accessToken', user.stsTokenManager.accessToken )
+        
+        const idToken = await user.getIdToken(); // Obtener el token de acceso
+        localStorage.setItem('accessToken', idToken);
+        
         router.push({ name: 'home' })
     } catch (error) {
         console.log("Error AL INICIAR SESION:", error);

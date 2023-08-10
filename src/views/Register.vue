@@ -95,7 +95,9 @@ const onSubmit = async() => {
         console.log("Usuario creado:", userCredential);
 
         localStorage.setItem( 'userUid', userCredential.user.uid )
-        localStorage.setItem( 'accessToken', userCredential.user.stsTokenManager.accessToken )
+        
+        const idToken = await userCredential.user.getIdToken(); // Obtener el token de acceso
+        localStorage.setItem('accessToken', idToken);
 
         const user = userCredential.user; // Obtén el objeto de usuario
 
