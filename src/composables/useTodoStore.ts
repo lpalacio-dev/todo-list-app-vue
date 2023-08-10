@@ -10,6 +10,7 @@ export const useTodoStore = () => {
         getTodos: () => store.getTodos(),
         createTodo: (texto: string) => store.createTodo(texto),
         updateTodo: (todo :any, changeStatus = false) => store.updateTodo(todo, changeStatus),
-        deleteTodo: (id: string) => store.deleteTodo(id)
+        deleteTodo: (id: string) => store.deleteTodo(id),
+        clearTodoList: () => store.clearTodoList(),
     }
 }

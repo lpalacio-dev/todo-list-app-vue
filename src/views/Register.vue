@@ -5,17 +5,32 @@
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form class="space-y-6" action="#" method="POST">
+        <form class="space-y-6" action="" @submit.prevent="onSubmit">
             <div>
-                <label for="nombre" class="block text-sm font-medium leading-6 text-gray-900">Nombre</label>
+                <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Nombre</label>
                 <div class="mt-2">
-                    <input id="nombre" name="nombre" type="text" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <input 
+                        id="name" 
+                        name="name" 
+                        v-model="userForm.name"
+                        type="text" 
+                        required 
+                        class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    >
                 </div>
             </div>
             <div>
                 <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Correo electrónico</label>
                 <div class="mt-2">
-                    <input id="email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <input 
+                        id="email"
+                        name="email"
+                        v-model="userForm.email"
+                        type="email"
+                        autocomplete="email"
+                        required
+                        class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    >
                 </div>
             </div>
 
@@ -27,7 +42,15 @@
                     </div> -->
                     </div>
                     <div class="mt-2">
-                        <input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        <input
+                            id="password"
+                            name="password"
+                            v-model="userForm.password"
+                            type="password"
+                            autocomplete="current-password"
+                            required
+                            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        >
                     </div>
             </div>
 
@@ -46,6 +69,49 @@
     </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { auth, createUserWithEmailAndPassword, updateProfile } from '@/utils/firebaseConfig'
+
+const userForm = ref({
+    name: '',
+    email: '',
+    password: ''
+})
+
+const router = useRouter()
+
+const onSubmit = async() => {
+
+    console.log(userForm.value)
+    const { email, password, name } = userForm.value
+    userForm.value.name = ''
+    userForm.value.email = ''
+    userForm.value.password = ''
+
+    try {     
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+        console.log("Usuario creado:", userCredential);
+
+        localStorage.setItem( 'userUid', userCredential.user.uid )
+        localStorage.setItem( 'accessToken', userCredential.user.stsTokenManager.accessToken )
+
+        const user = userCredential.user; // Obtén el objeto de usuario
+
+        await updateProfile(user, {
+            displayName: name,
+        })
+
+        console.log("Nombre de usuario actualizado:");
+
+        router.push({ name: 'home' })
+
+    } catch (error) {
+        console.error("Error al crear el usuario:", error);
+    }
+}
+
+
 
 </script>

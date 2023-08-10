@@ -1,28 +1,44 @@
 <template>
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
         <img class="mx-auto h-10 w-auto" src="@/assets/logo.svg" alt="Your Company">
-        <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Iniciar sesión</h2>
+        <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Crear cuenta</h2>
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form class="space-y-6" action="#" method="POST">
+        <form class="space-y-6" action="" @submit.prevent="onSubmit">
             <div>
                 <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Correo electrónico</label>
                 <div class="mt-2">
-                <input id="email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <input 
+                        id="email"
+                        name="email"
+                        v-model="userForm.email"
+                        type="email"
+                        autocomplete="email"
+                        required
+                        class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    >
                 </div>
             </div>
 
             <div>
                 <div class="flex items-center justify-between">
-                <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Contraseña</label>
-                <!-- <div class="text-sm">
-                    <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
-                </div> -->
-                </div>
-                <div class="mt-2">
-                <input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                </div>
+                    <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Contraseña</label>
+                    <!-- <div class="text-sm">
+                        <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+                    </div> -->
+                    </div>
+                    <div class="mt-2">
+                        <input
+                            id="password"
+                            name="password"
+                            v-model="userForm.password"
+                            type="password"
+                            autocomplete="current-password"
+                            required
+                            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        >
+                    </div>
             </div>
 
             <div>
@@ -33,13 +49,48 @@
         </form>
 
         <p class="mt-10 text-center text-sm text-gray-500">
-            ¿No tienes cuenta?
+            ¿No tienes una cuenta?
             <router-link :to="{ name: 'register' } " class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Crear cuenta</router-link>
         </p>
         
     </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { auth, signInWithEmailAndPassword } from '@/utils/firebaseConfig'
+
+const userForm = ref({
+    email: '',
+    password: ''
+})
+
+const router = useRouter()
+
+const onSubmit = async() => {
+
+    console.log(userForm.value)
+    const { email, password } = userForm.value
+    userForm.value.email = ''
+    userForm.value.password = ''
+
+    try {     
+        const { user} = await signInWithEmailAndPassword(auth, email, password)
+        console.log("INICIO DE SESION:", user);
+
+        localStorage.setItem( 'userUid', user.uid )
+        localStorage.setItem( 'accessToken', user.stsTokenManager.accessToken )
+        router.push({ name: 'home' })
+    } catch (error) {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log("Error AL INICIAR SESION:", error);
+        console.log(errorCode)
+        console.log(errorMessage)
+    }
+}
+
+
 
 </script>

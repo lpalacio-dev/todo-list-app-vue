@@ -3,7 +3,7 @@
   import Inputbar from '@/components/inputbar/Inputbar.vue'
   import TodoList from '@/components/todo-list/TodoList.vue'
   import Navbar from '@/components/navbar/Navbar.vue'
-
+  
 </script>
 
 <template>
@@ -12,8 +12,8 @@
     
     <div class="">
       <Navbar></Navbar>
-      <div class="w-full p-4 text-6xl text-center">
-        My Todo List
+      <div class="w-full p-4 text-6xl font-semibold text-center">
+        Tareas
       </div>
       <Inputbar></Inputbar>
       <TodoList></TodoList>
