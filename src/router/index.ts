@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import AuthView from '../views/AuthView.vue'
+import HomeView from '../views/HomeView.vue';
+import AuthView from '../views/AuthView.vue';
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import isAuthenticatedGuard from './auth-guard'

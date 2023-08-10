@@ -83,14 +83,8 @@ const onSubmit = async() => {
         localStorage.setItem( 'accessToken', user.stsTokenManager.accessToken )
         router.push({ name: 'home' })
     } catch (error) {
-        const errorCode = error.code;
-        const errorMessage = error.message;
         console.log("Error AL INICIAR SESION:", error);
-        console.log(errorCode)
-        console.log(errorMessage)
     }
 }
-
-
 
 </script>
