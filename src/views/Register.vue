@@ -54,6 +54,10 @@
                     </div>
             </div>
 
+            <div v-if="errorForm" class="text-center italic text-red-500 sm:text-sm">
+                {{ errorForm }}
+            </div>
+
             <div>
                 <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     Registrarse
@@ -80,37 +84,37 @@ const userForm = ref({
     password: ''
 })
 
+const errorForm = ref('')
+
 const router = useRouter()
 
 const onSubmit = async() => {
 
-    console.log(userForm.value)
+    // console.log(userForm.value)
     const { email, password, name } = userForm.value
     userForm.value.name = ''
     userForm.value.email = ''
     userForm.value.password = ''
+    errorForm.value = ''
 
     try {     
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-        console.log("Usuario creado:", userCredential);
+        const { user } = await createUserWithEmailAndPassword(auth, email, password)
+        // console.log("Usuario creado:", userCredential);
 
-        localStorage.setItem( 'userUid', userCredential.user.uid )
+        localStorage.setItem( 'userUid', user.uid )
         
-        const idToken = await userCredential.user.getIdToken(); // Obtener el token de acceso
+        const idToken = await user.getIdToken(); // Obtener el token de acceso
         localStorage.setItem('accessToken', idToken);
-
-        const user = userCredential.user; // Obtén el objeto de usuario
 
         await updateProfile(user, {
             displayName: name,
         })
-
-        console.log("Nombre de usuario actualizado:");
-
+        // console.log("Nombre de usuario actualizado:");
         router.push({ name: 'home' })
 
     } catch (error) {
-        console.error("Error al crear el usuario:", error);
+        errorForm.value = 'Lo sentimos, el correo ya está en uso'
+        // console.error("Error al crear el usuario:", error);
     }
 }
 

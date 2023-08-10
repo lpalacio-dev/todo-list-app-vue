@@ -9,6 +9,9 @@ import {
     onAuthStateChanged,
     setPersistence, 
     browserLocalPersistence,
+    GoogleAuthProvider,
+    signInWithRedirect,  
+    getRedirectResult,
 } from "firebase/auth";
 // import { getDatabase } from "firebase/database";
 
@@ -30,7 +33,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Authentication and get a reference to the service
-const auth = getAuth(app);
+const auth = getAuth();
 
 // Configura la persistencia de autenticación local
 setPersistence(auth, browserLocalPersistence);
@@ -42,4 +45,7 @@ export {
     updateProfile,
     signOut,
     onAuthStateChanged,
+    GoogleAuthProvider,
+    signInWithRedirect,  
+    getRedirectResult
 }

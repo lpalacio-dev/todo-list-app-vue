@@ -38,7 +38,7 @@ import { useRouter } from 'vue-router'
 import { auth, signOut, onAuthStateChanged } from '@/utils/firebaseConfig'
 import { useTodoStore } from '@/composables/useTodoStore'
 
-console.log(auth)
+// console.log(auth)
 
 const { clearTodoList } = useTodoStore()
 
