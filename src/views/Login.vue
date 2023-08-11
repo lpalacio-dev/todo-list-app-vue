@@ -78,7 +78,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { auth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithRedirect,  getRedirectResult } from '@/utils/firebaseConfig'
+import { auth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from '@/utils/firebaseConfig'
 
 const userForm = ref({
     email: '',
@@ -115,29 +115,23 @@ const onSubmit = async() => {
 
 const loginWithGoogle = () => {
     const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider);
-    router.push({ name: 'home' })
-}
-
-getRedirectResult(auth)
+    signInWithPopup(auth, provider)
     .then(async(result) => {
-        if(result){
-            // console.log(result)
-            // This gives you a Google Access Token. You can use it to access Google APIs.
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            // const token = credential.accessToken;
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        // const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        // IdP data available using getAdditionalUserInfo(result)
+        // ...
 
-            // The signed-in user info.
-            const user = result.user;
-            // IdP data available using getAdditionalUserInfo(result)
-            // ...
-            localStorage.setItem( 'userUid', user.uid )
+        localStorage.setItem( 'userUid', user.uid )
         
-            const idToken = await user.getIdToken(); // Obtener el token de acceso
-            localStorage.setItem('accessToken', idToken);
-            
-            // router.push({ name: 'home' })
-        }
+        const idToken = await user.getIdToken(); // Obtener el token de acceso
+        localStorage.setItem('accessToken', idToken);
+        
+        router.push({ name: 'home' })
+
     }).catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
@@ -147,6 +141,8 @@ getRedirectResult(auth)
         // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error);
         // ...
-});
+    });
+}
+
 
 </script>

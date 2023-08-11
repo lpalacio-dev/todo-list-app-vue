@@ -10,8 +10,7 @@ import {
     setPersistence, 
     browserLocalPersistence,
     GoogleAuthProvider,
-    signInWithRedirect,  
-    getRedirectResult,
+    signInWithPopup,
 } from "firebase/auth";
 // import { getDatabase } from "firebase/database";
 
@@ -46,6 +45,5 @@ export {
     signOut,
     onAuthStateChanged,
     GoogleAuthProvider,
-    signInWithRedirect,  
-    getRedirectResult
+    signInWithPopup,
 }
