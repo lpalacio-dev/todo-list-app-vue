@@ -1,6 +1,15 @@
 import { defineStore } from 'pinia'
 import { auth } from '@/utils/firebaseConfig'
-import { signInWithEmailAndPassword, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, createUserWithEmailAndPassword, updateProfile, signOut } from "firebase/auth";
+import {
+    signInWithEmailAndPassword,
+    GoogleAuthProvider,
+    GithubAuthProvider,
+    signInWithPopup,
+    createUserWithEmailAndPassword,
+    updateProfile,
+    signOut,
+    linkWithPopup
+} from "firebase/auth";
 import { type MyFirebaseUser } from '@/interfaces/auth'
 import { useTodoStore } from '@/composables/useTodoStore'
 
@@ -22,7 +31,7 @@ export const useAuthStore = defineStore('auth', {
         async loginWithEmailPassword(email:string, password:string) {
             try {     
                 const { user } =  await signInWithEmailAndPassword(auth, email, password)
-                console.log(user)
+                // console.log(user)
                 const idToken = await user.getIdToken(); // Obtener el token de acceso
                 this.user = user
                 this.idToken = idToken
