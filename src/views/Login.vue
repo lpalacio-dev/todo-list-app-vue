@@ -116,6 +116,7 @@ const onSubmit = async() => {
 const loginWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithRedirect(auth, provider);
+    router.push({ name: 'home' })
 }
 
 getRedirectResult(auth)
