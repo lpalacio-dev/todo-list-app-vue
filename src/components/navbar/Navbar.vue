@@ -35,47 +35,30 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { auth, signOut, onAuthStateChanged } from '@/utils/firebaseConfig'
-import { useTodoStore } from '@/composables/useTodoStore'
-
-// console.log(auth)
-
-const { clearTodoList } = useTodoStore()
+import { auth, onAuthStateChanged } from '@/utils/firebaseConfig'
+import { useAuthStore } from '@/stores/auth'
+import { useTodoStore } from '@/stores/todo'
 
 const username = ref('')
+const authStore = useAuthStore()
+const todoStore = useTodoStore()
+const router = useRouter()
 
 onAuthStateChanged(auth, (user) => {
       if (user) {
-        // El usuario está autenticado
-          // console.log("Usuario autenticado:", user.displayName);
-        username.value = user.displayName || '';
-          
+        todoStore.setUserId(user.uid)
+        authStore.setUser(user);
+        username.value = user.displayName || ''
       } else {
-        // El usuario no está autenticado (ha cerrado sesión o no ha iniciado sesión)
-          // console.log("Usuario no autenticado");
-        username.value = ''
+        authStore.logout()
       }
-  });
+});
 
-const router = useRouter()
-const signOutFun = async() => {
+const signOutFun = () => {
   if(!confirm("¿Estás seguro de cerrar sesión?")) {
-    // console.log('No hizo nada')
     return
   }
-
-  try {
-    // console.log('Antes de CERRAR SESIÓN', auth.currentUser)
-    await signOut(auth);
-    clearTodoList();
-    localStorage.removeItem('userUid')
-    localStorage.removeItem('accessToken')
-    
-    // console.log('DESPUES de CERRAR SESIÓN', auth.currentUser)
-    // console.log("El usuario ha cerrado sesión")
-    router.push({name: 'login'})
-  } catch (error) {
-    console.log(error)
-  }
+  authStore.logout()
+  router.push({name: 'login'})
 }
 </script>

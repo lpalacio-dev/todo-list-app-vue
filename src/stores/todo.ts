@@ -1,10 +1,12 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import firebaseApi from '@/api/firebaseApi'
+import { useAuthStore } from './auth'
 
 interface State {
     arrTodos: TodoTask[],
-    isTodoList: boolean
+    isTodoList: boolean,
+    userId: string | null
 }
 
 interface TodoTask {
@@ -22,13 +24,18 @@ interface MyData {
 export const useTodoStore = defineStore('todo', {
     state: ():State => ({
         arrTodos: [],
-        isTodoList: false
+        isTodoList: false,
+        userId: null
     }),
     actions: {
+        setUserId( id: string) {
+            this.userId = id
+        },
+
         async getTodos () {
             // console.log('ANTES DEL GETTODOS', this.arrTodos)
-            const user = localStorage.getItem('userUid')
-            const { data } = await firebaseApi.get(`/todos/${user}.json`)
+            
+            const { data } = await firebaseApi.get(`/todos/${this.userId}.json`)
             // console.log('primera respuesta', data)
 
             if( !data ) {
@@ -58,8 +65,8 @@ export const useTodoStore = defineStore('todo', {
             // console.log('ANTES DE CREAR', this.arrTodos)
             
             const dataToSave = { texto: texto, status: false}
-            const user = localStorage.getItem('userUid')
-            const { data } = await firebaseApi.post( `/todos/${user}.json`, dataToSave )
+            
+            const { data } = await firebaseApi.post( `/todos/${this.userId}.json`, dataToSave )
             
             this.arrTodos.push({id: data.name, texto, status: false})
             this.isTodoList = true
@@ -73,8 +80,8 @@ export const useTodoStore = defineStore('todo', {
             }
             // console.log('EN DONE TODO', todo.status)
             const dataToSave = { texto: todo.texto, status: todo.status}
-            const user = localStorage.getItem('userUid')
-            await firebaseApi.put(`/todos/${user}/${todo.id}.json`, dataToSave)
+            
+            await firebaseApi.put(`/todos/${this.userId}/${todo.id}.json`, dataToSave)
 
             const idx = this.arrTodos.map( t => t.id).indexOf( todo.id )
             this.arrTodos[idx] = todo
@@ -82,8 +89,8 @@ export const useTodoStore = defineStore('todo', {
 
         async deleteTodo(id: string) {
             // console.warn('El ID', id)
-            const user = localStorage.getItem('userUid')
-            await firebaseApi.delete(`/todos/${user}/${id}.json`)
+            
+            await firebaseApi.delete(`/todos/${this.userId}/${id}.json`)
             // console.log('ANTES DE ELIMINAR', this.arrTodos)
             this.arrTodos = this.arrTodos.filter( todo => todo.id !== id )
             if(this.arrTodos.length === 0) {
@@ -97,6 +104,7 @@ export const useTodoStore = defineStore('todo', {
         clearTodoList() {
             this.arrTodos  = [],
             this.isTodoList = false
+            this.userId = null
         }
     }
 })

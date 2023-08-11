@@ -76,17 +76,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { auth, createUserWithEmailAndPassword, updateProfile } from '@/utils/firebaseConfig'
+import { useAuthStore } from '@/stores/auth';
 
 const userForm = ref({
     name: '',
     email: '',
     password: ''
 })
-
 const errorForm = ref('')
 
 const router = useRouter()
+
+const authStore = useAuthStore()
 
 const onSubmit = async() => {
 
@@ -97,25 +98,15 @@ const onSubmit = async() => {
     userForm.value.password = ''
     errorForm.value = ''
 
-    try {     
-        const { user } = await createUserWithEmailAndPassword(auth, email, password)
-        // console.log("Usuario creado:", userCredential);
+    const { ok, message } = await authStore.createUserEmailAndPassword(name, email, password)
 
-        localStorage.setItem( 'userUid', user.uid )
-        
-        const idToken = await user.getIdToken(); // Obtener el token de acceso
-        localStorage.setItem('accessToken', idToken);
-
-        await updateProfile(user, {
-            displayName: name,
-        })
-        // console.log("Nombre de usuario actualizado:");
-        router.push({ name: 'home' })
-
-    } catch (error) {
-        errorForm.value = 'Lo sentimos, el correo ya está en uso'
-        // console.error("Error al crear el usuario:", error);
+    if(ok) {
+        errorForm.value = ''
+        router.push({name: 'home'})
+    } else {
+        errorForm.value = message || ''
     }
+    
 }
 
 

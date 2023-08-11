@@ -78,7 +78,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { auth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from '@/utils/firebaseConfig'
+import { useAuthStore } from '@/stores/auth';
 
 const userForm = ref({
     email: '',
@@ -86,8 +86,8 @@ const userForm = ref({
 })
 
 const errorForm = ref('')
-
 const router = useRouter()
+const authStore = useAuthStore()
 
 const onSubmit = async() => {
 
@@ -97,51 +97,25 @@ const onSubmit = async() => {
     userForm.value.password = ''
     errorForm.value = ''
 
-    try {     
-        const { user }  = await signInWithEmailAndPassword(auth, email, password)
-        // console.log("INICIO DE SESION:", user);
-
-        localStorage.setItem( 'userUid', user.uid )
-        
-        const idToken = await user.getIdToken(); // Obtener el token de acceso
-        localStorage.setItem('accessToken', idToken);
-        
+    const { ok, message } = await authStore.loginWithEmailPassword(email, password)
+    
+    if( ok ) {
+        errorForm.value = ''
         router.push({ name: 'home' })
-    } catch (error) {
-        errorForm.value = 'Error al iniciar sesión, verifique su correo o contraseña'
-        // console.log("Error AL INICIAR SESION:", error);
+    } else {
+        errorForm.value = message || ''
     }
+    
 }
 
-const loginWithGoogle = () => {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-    .then(async(result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        // const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
+const loginWithGoogle = async() => {
+    const { ok } = await authStore.createUserGoogle()
 
-        localStorage.setItem( 'userUid', user.uid )
-        
-        const idToken = await user.getIdToken(); // Obtener el token de acceso
-        localStorage.setItem('accessToken', idToken);
-        
+    if(ok) {
         router.push({ name: 'home' })
+    }
 
-    }).catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-    });
+    return
 }
 
 

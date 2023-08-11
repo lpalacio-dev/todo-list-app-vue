@@ -2,15 +2,9 @@
 import { initializeApp } from "firebase/app";
 import {
     getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    updateProfile,
-    signOut,
     onAuthStateChanged,
     setPersistence, 
     browserLocalPersistence,
-    GoogleAuthProvider,
-    signInWithPopup,
 } from "firebase/auth";
 // import { getDatabase } from "firebase/database";
 
@@ -39,11 +33,5 @@ setPersistence(auth, browserLocalPersistence);
 
 export { 
     auth, 
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    updateProfile,
-    signOut,
     onAuthStateChanged,
-    GoogleAuthProvider,
-    signInWithPopup,
 }
