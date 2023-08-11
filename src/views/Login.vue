@@ -134,7 +134,7 @@ const loginWithGithub = async() => {
     if(ok) {
         router.push({ name: 'home' })
     }
-
+    // TODO: SOLUCINAR LA MISMA CUENTA CON DIFERENTES CREDENCIALES
     return
 }
 
