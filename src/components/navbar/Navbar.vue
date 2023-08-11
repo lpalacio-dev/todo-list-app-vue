@@ -44,12 +44,12 @@ const authStore = useAuthStore()
 const todoStore = useTodoStore()
 const router = useRouter()
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
       if (user) {
         todoStore.setUserId(user.uid)
-        todoStore.getTodos()
         authStore.setUser(user);
         username.value = user.displayName || ''
+        todoStore.getTodos()
       } else {
         // authStore.logout()
       }

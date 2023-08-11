@@ -7,7 +7,7 @@ const firebaseApi = axios.create({
 firebaseApi.interceptors.request.use( (config) => {
 
     config.params = {
-        auth: localStorage.getItem('accessToken')
+        auth: localStorage.getItem('idToken')
     }
 
     return config

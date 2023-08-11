@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { auth } from '@/utils/firebaseConfig'
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, updateProfile, signOut } from "firebase/auth";
+import { signInWithEmailAndPassword, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, createUserWithEmailAndPassword, updateProfile, signOut } from "firebase/auth";
 import { type MyFirebaseUser } from '@/interfaces/auth'
 import { useTodoStore } from '@/composables/useTodoStore'
 
@@ -22,11 +22,12 @@ export const useAuthStore = defineStore('auth', {
         async loginWithEmailPassword(email:string, password:string) {
             try {     
                 const { user } =  await signInWithEmailAndPassword(auth, email, password)
-
+                console.log(user)
                 const idToken = await user.getIdToken(); // Obtener el token de acceso
                 this.user = user
                 this.idToken = idToken
                 localStorage.setItem('idToken', idToken);
+                await useTodoStore().getTodos();
                 return { ok: true }
                 
             } catch (error) {
@@ -66,7 +67,7 @@ export const useAuthStore = defineStore('auth', {
                 this.user = user
                 this.idToken = idToken;
                 localStorage.setItem('idToken', idToken);
-
+                await useTodoStore().getTodos();
                 return { ok: true }
 
             } catch (error) {
@@ -76,18 +77,36 @@ export const useAuthStore = defineStore('auth', {
             
         },
 
+        async createUserGithub() {
+            const provider = new GithubAuthProvider();
+
+            try {
+                const { user } =  await signInWithPopup(auth, provider)
+                const idToken = await user.getIdToken(); // Obtener el token de acceso
+                this.user = user
+                this.idToken = idToken;
+                localStorage.setItem('idToken', idToken);
+                await useTodoStore().getTodos();
+                return { ok: true }
+
+            } catch (error) {
+                console.log(error);
+                return { ok: false }
+            }
+        },
+
         async logout() {
             try {
-            await signOut(auth);
-            this.clearState()
+                await signOut(auth);
+                this.clearState()
             } catch (error) {
-            console.log(error)
+                console.log(error)
             }
         },
 
         clearState() {
-            useTodoStore().clearTodoList();
             localStorage.removeItem('idToken')
+            useTodoStore().clearTodoList();
             this.user = null,
             this.idToken = '' 
         }

@@ -7,32 +7,10 @@ export default defineComponent({
     components: { TodoTask },
     setup(){
 
-        // let todos = ref()
-        // let isList = ref()
-
-        const { arrTodos, isTodoList, getTodos } = useTodoStore()
+        const { arrTodos, isTodoList } = useTodoStore()
         
-        onBeforeMount(async () => {              
-            await getTodos()
-        });
-
-        watch(arrTodos, (nuevoValor) => {
-            // console.log('en el watch ARRTODOS', arrTodos)
-            // todos.value = nuevoValor
-            // console.log('en el watch todos.value', todos.value)
-
-            // console.log(nuevoValor)
-
-            // if(nuevoValor.length > 0) {
-            //     isTodoList = true
-            // } else {
-            //     isTodoList.value = false
-            // }
-        });
-
         return {
             arrTodos,
-            // todos,
             isTodoList
         }
     }
