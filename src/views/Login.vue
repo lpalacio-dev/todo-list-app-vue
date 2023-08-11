@@ -78,8 +78,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { signInWithRedirect,  getRedirectResult } from "firebase/auth";
-import { auth, signInWithEmailAndPassword, GoogleAuthProvider } from '@/utils/firebaseConfig'
+import { auth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithRedirect,  getRedirectResult } from '@/utils/firebaseConfig'
 
 const userForm = ref({
     email: '',
@@ -136,7 +135,7 @@ getRedirectResult(auth)
             const idToken = await user.getIdToken(); // Obtener el token de acceso
             localStorage.setItem('accessToken', idToken);
             
-            router.push({ name: 'home' })
+            // router.push({ name: 'home' })
         }
     }).catch((error) => {
         // Handle Errors here.
