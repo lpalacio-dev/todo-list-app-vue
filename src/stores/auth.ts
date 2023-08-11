@@ -33,10 +33,7 @@ export const useAuthStore = defineStore('auth', {
                 const { user } =  await signInWithEmailAndPassword(auth, email, password)
                 // console.log(user)
                 const idToken = await user.getIdToken(); // Obtener el token de acceso
-                this.user = user
-                this.idToken = idToken
-                localStorage.setItem('idToken', idToken);
-                await useTodoStore().getTodos();
+                this.setState(user, idToken)
                 return { ok: true }
                 
             } catch (error) {
@@ -73,10 +70,7 @@ export const useAuthStore = defineStore('auth', {
             try {
                 const { user } =  await signInWithPopup(auth, provider)
                 const idToken = await user.getIdToken(); // Obtener el token de acceso
-                this.user = user
-                this.idToken = idToken;
-                localStorage.setItem('idToken', idToken);
-                await useTodoStore().getTodos();
+                this.setState(user, idToken)
                 return { ok: true }
 
             } catch (error) {
@@ -92,14 +86,11 @@ export const useAuthStore = defineStore('auth', {
             try {
                 const { user } =  await signInWithPopup(auth, provider)
                 const idToken = await user.getIdToken(); // Obtener el token de acceso
-                this.user = user
-                this.idToken = idToken;
-                localStorage.setItem('idToken', idToken);
-                await useTodoStore().getTodos();
+                this.setState(user, idToken)
                 return { ok: true }
 
             } catch (error) {
-                console.log(error);
+                console.log(error)        
                 return { ok: false }
             }
         },
@@ -113,11 +104,18 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
+        async setState(user:MyFirebaseUser, idToken:string) {
+            this.user = user
+            this.idToken = idToken;
+            localStorage.setItem('idToken', idToken);
+            await useTodoStore().getTodos();
+        },
+
         clearState() {
-            localStorage.removeItem('idToken')
-            useTodoStore().clearTodoList();
             this.user = null,
             this.idToken = '' 
+            localStorage.removeItem('idToken')
+            useTodoStore().clearTodoList();
         }
 
     },
