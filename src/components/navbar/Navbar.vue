@@ -47,6 +47,7 @@ const router = useRouter()
 onAuthStateChanged(auth, (user) => {
       if (user) {
         todoStore.setUserId(user.uid)
+        todoStore.getTodos()
         authStore.setUser(user);
         username.value = user.displayName || ''
       } else {
