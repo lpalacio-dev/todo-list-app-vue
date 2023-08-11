@@ -50,7 +50,7 @@ onAuthStateChanged(auth, (user) => {
         authStore.setUser(user);
         username.value = user.displayName || ''
       } else {
-        authStore.logout()
+        // authStore.logout()
       }
 });
 
